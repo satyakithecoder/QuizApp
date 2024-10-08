@@ -15,7 +15,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
 const db = getDatabase(app)
 const usersinDB = ref(db, "username")
-signUp.addEventListener("click", function(){
+signUp.addEventListener("click", function(e){
+e.preventDefault()	
 const email = document.getElementById("email").value
 const password = document.getElementById("password").value
 const username = document.getElementById("username").value	
