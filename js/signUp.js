@@ -19,16 +19,20 @@ const db = getFirestore(app);
 signUp.addEventListener("click", async function (e) {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const username = document.getElementById("username").value;
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const usernameInput = document.getElementById("username");
 
+  const email = emailInput.value;
+  const password = passwordInput.value;
+  const username = usernameInput.value;
 
   const res = await emailValidate(email);
   if (res === false) {
     console.error("Invalid email");
     alert("Not a valid email");
     return;
+    
   }
 
   createUserWithEmailAndPassword(auth, email, password)
@@ -52,6 +56,14 @@ signUp.addEventListener("click", async function (e) {
       console.log(`${errorCode}: ${errorMessage}`);
       alert("An Error Occurred while creating your account. Please retry!");
     });
+
+    emailInput.value = "";
+    passwordInput.value = "";
+    usernameInput.value = ""; 
+     
+   setTimeout(() => {
+      alert("You will be redirected to signIn page in few seconds")
+   }, 6000);
 });
 
 async function emailValidate(user) {
