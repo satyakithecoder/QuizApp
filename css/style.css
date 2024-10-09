@@ -47,25 +47,14 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
-button:hover {
+.hover:hover {
   background: linear-gradient(90deg in oklab, #347474, #118a7e);
 }
-.timer {
+#timer {
   font-size: 40px;
   color: rgb(41, 206, 41);
   border: 10px solid rgb(41, 206, 41);
   box-sizing: border-box;
   padding: 24px;
   border-radius: 60%;
-}
-.move {
-  width: 55vh;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-direction: row;
-}
-.move > img{
-   height: 25px;
-   width: 20px;
 }
