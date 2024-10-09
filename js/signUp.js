@@ -43,7 +43,8 @@ signUp.addEventListener("click", async function (e) {
       try {
         const docRef = await addDoc(collection(db, "users"), {
           username: username,
-          email: email
+          email: email,
+          password: password
         });
         console.log("User added to Firestore with ID: ", docRef.id);
       } catch (e) {
@@ -63,7 +64,8 @@ signUp.addEventListener("click", async function (e) {
      
    setTimeout(() => {
       alert("You will be redirected to signIn page in few seconds")
-   }, 6000);
+      window.location.href = "./index.html"
+   }, 8000);
 });
 
 async function emailValidate(user) {
