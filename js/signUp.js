@@ -12,8 +12,8 @@ const firebaseConfig = {
 	databaseUrl: "https://quiz-app-d7864-default-rtdb.asia-southeast1.firebasedatabase.app/"
 };
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app)
 const db = getDatabase(app)
+const auth = getAuth(app)
 const usersinDB = ref(db, "username")
 signUp.addEventListener("click", function(e){
 e.preventDefault()	
