@@ -1,6 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 const signUp = document.getElementById("sign-up");
 
@@ -32,7 +39,6 @@ signUp.addEventListener("click", async function (e) {
     console.error("Invalid email");
     alert("Not a valid email");
     return;
-    
   }
 
   createUserWithEmailAndPassword(auth, email, password)
@@ -44,7 +50,7 @@ signUp.addEventListener("click", async function (e) {
         const docRef = await addDoc(collection(db, "users"), {
           username: username,
           email: email,
-          password: password
+          password: password,
         });
         console.log("User added to Firestore with ID: ", docRef.id);
       } catch (e) {
@@ -58,26 +64,27 @@ signUp.addEventListener("click", async function (e) {
       alert("An Error Occurred while creating your account. Please retry!");
     });
 
-    emailInput.value = "";
-    passwordInput.value = "";
-    usernameInput.value = ""; 
-     
-   setTimeout(() => {
-      alert("You will be redirected to signIn page in few seconds")
-      window.location.href = "./index.html"
-   }, 8000);
+  emailInput.value = "";
+  passwordInput.value = "";
+  usernameInput.value = "";
+
+  setTimeout(() => {
+    alert("You will be redirected to signIn page in few seconds");
+    window.location.href = "./index.html";
+  }, 8000);
 });
 
 async function emailValidate(user) {
   try {
-    const response = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=b8b945ae1a4842228155a5216491fd3c&email=${user}`);
+    const response = await fetch(
+      `https://emailvalidation.abstractapi.com/v1/?api_key=b8b945ae1a4842228155a5216491fd3c&email=${user}`
+    );
 
     if (!response.ok) return false;
     const data = await response.json();
 
     console.log(data);
     return data.deliverability === "DELIVERABLE";
-
   } catch (error) {
     console.error("Email validation failed", error);
     return false;
