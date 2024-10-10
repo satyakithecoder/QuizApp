@@ -1,12 +1,12 @@
 const signUp = document.getElementById("sign-up");
 const signIn = document.getElementById("sign-in");
 const googleSignInbtn = document.getElementById("google-sign-in");
-
+var email;
 signUp.addEventListener("click", function () {
   window.location.href = "./signUp.html";
 });
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 import {
   getAuth,
@@ -15,13 +15,13 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   fetchSignInMethodsForEmail,
-} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 import {
   getFirestore,
   collection,
   addDoc,
-} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCLv91NoWJDg14RVehyvMvBWWfYNyCYLxs",
@@ -40,28 +40,16 @@ signIn.addEventListener("click", function (e) {
   e.preventDefault();
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
-  checkGoogleSignIn(email)
-    .then((isGoogleSignIn) => {
-      if (isGoogleSignIn) {
-        alert("You are already signed in with your Google account.");
-        window.location.href = "./quiz.html";
-      } else {
-        signInWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            var user = userCredential.user;
-            console.log(user);
-            window.location.href = "./quiz.html";
-          })
-          .catch((error) => {
-            var errorMessage = error.message;
-            alert("Sign-in failed");
-            console.error(`${errorMessage}`);
-          });
-      }
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      var user = userCredential.user;
+      console.log(user);
+      window.location.href = "./quiz.html";
     })
     .catch((error) => {
-      console.error("Error checking sign-in methods:", error);
+      var errorMessage = error.message;
+      alert("Sign-in failed");
+      console.error(`${errorMessage}`);
     });
   document.getElementById("email").value = "";
   document.getElementById("password").value = "";
@@ -69,17 +57,30 @@ signIn.addEventListener("click", function (e) {
 
 googleSignInbtn.addEventListener("click", function () {
   signInWithPopup(auth, provider)
-    .then((result) => {
+    .then(async (result) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential.accessToken;
       const user = result.user;
       console.log(token);
       console.log("User Signed In. User Info:", user);
-      const email = user.email;
-      const displayName = user.displayName;
+      
+      let emailCheck = user.email; 
+      const displayName = user.displayName; 
       const photoURL = user.photoURL;
+
+      
+      if (!emailCheck) {
+         alert("Your Security Rules are not allowing us to access your email.");
+         email = prompt("Enter Your Email:"); 
+  
+         if (!email) {
+           alert("Email is required for signing up.");
+           return;
+         }
+      }
+      
       try {
-        const docRef = addDoc(collection(googleDB, "google accounts"), {
+        const docRef = await addDoc(collection(googleDB, "google_accounts"), {
           username: displayName,
           email: email,
           photoURL: photoURL,
@@ -88,17 +89,19 @@ googleSignInbtn.addEventListener("click", function () {
       } catch (e) {
         console.error("Error in sending details", e);
       }
+      
       window.location.href = "./quiz.html";
     })
     .catch((error) => {
       const errorMessage = error.message;
-      const email = error.customData.email;
+      const email = error.customData?.email; 
       const credential = GoogleAuthProvider.credentialFromError(error);
       console.log(email, credential);
       console.error(`${errorMessage}`);
       alert("Google Sign-In failed");
     });
 });
+
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -107,18 +110,3 @@ onAuthStateChanged(auth, (user) => {
     console.log(`${user} signed out`);
   }
 });
-function checkGoogleSignIn(email) {
-  return new Promise((resolve, reject) => {
-    fetchSignInMethodsForEmail(auth, email)
-      .then((methods) => {
-        if (methods.includes("google.com")) {
-          resolve(true); 
-        } else {
-          resolve(false); 
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
