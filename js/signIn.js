@@ -6,7 +6,7 @@ signUp.addEventListener("click", function () {
   window.location.href = "./signUp.html";
 });
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 
 import {
   getAuth,
@@ -15,13 +15,13 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   fetchSignInMethodsForEmail,
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
 import {
   getFirestore,
   collection,
   addDoc,
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCLv91NoWJDg14RVehyvMvBWWfYNyCYLxs",
@@ -30,8 +30,6 @@ const firebaseConfig = {
   storageBucket: "quiz-app-d7864.appspot.com",
   messagingSenderId: "835267412301",
   appId: "1:835267412301:web:8663ad212fa04d537a7704",
-  databaseUrl:
-    "https://quiz-app-d7864-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -43,20 +41,28 @@ signIn.addEventListener("click", function (e) {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  checkGoogleSignIn(email);
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      var user = userCredential.user;
-      console.log(user);
-      window.location.href = "./quiz.html";
+  checkGoogleSignIn(email)
+    .then((isGoogleSignIn) => {
+      if (isGoogleSignIn) {
+        alert("You are already signed in with your Google account.");
+        window.location.href = "./quiz.html";
+      } else {
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            var user = userCredential.user;
+            console.log(user);
+            window.location.href = "./quiz.html";
+          })
+          .catch((error) => {
+            var errorMessage = error.message;
+            alert("Sign-in failed");
+            console.error(`${errorMessage}`);
+          });
+      }
     })
     .catch((error) => {
-      var errorMessage = error.message;
-      alert("Sign-in failed");
-      console.error(`${errorMessage}`);
+      console.error("Error checking sign-in methods:", error);
     });
-
   document.getElementById("email").value = "";
   document.getElementById("password").value = "";
 });
@@ -72,16 +78,16 @@ googleSignInbtn.addEventListener("click", function () {
       const email = user.email;
       const displayName = user.displayName;
       const photoURL = user.photoURL;
-       try {
-         const docRef = addDoc(collection(googleDB, "google accounts"), {
-             username: displayName,
-             email: email,
-             photoURL: photoURL
-         })
+      try {
+        const docRef = addDoc(collection(googleDB, "google accounts"), {
+          username: displayName,
+          email: email,
+          photoURL: photoURL,
+        });
         console.log("User added to Firestore with ID: ", docRef.id);
-       } catch (e) {
-         console.error("Error in sending details", e)
-       }
+      } catch (e) {
+        console.error("Error in sending details", e);
+      }
       window.location.href = "./quiz.html";
     })
     .catch((error) => {
@@ -102,15 +108,17 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 function checkGoogleSignIn(email) {
-  fetchSignInMethodsForEmail(auth, email)
-    .then((methods) => {
-      console.log(methods);
-      if (methods.includes("google.com")) {
-        alert("You are already signed in with your Google account.");
-        window.location.href = "./quiz.html";
-      }
-    })
-    .catch((error) => {
-      console.error("Error checking sign-in methods:", error);
-    });
+  return new Promise((resolve, reject) => {
+    fetchSignInMethodsForEmail(auth, email)
+      .then((methods) => {
+        if (methods.includes("google.com")) {
+          resolve(true); 
+        } else {
+          resolve(false); 
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
