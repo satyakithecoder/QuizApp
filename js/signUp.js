@@ -41,7 +41,8 @@ signUp.addEventListener("click", async function (e) {
     return;
   }
 
-  createUserWithEmailAndPassword(auth, email, password)
+  else{
+    createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       const user = userCredential.user;
       console.log(user);
@@ -58,9 +59,8 @@ signUp.addEventListener("click", async function (e) {
       }
     })
     .catch((error) => {
-      const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(`${errorCode}: ${errorMessage}`);
+      console.log(`Error: ${errorMessage}`);
       alert("An Error Occurred while creating your account. Please retry!");
     });
 
@@ -72,6 +72,7 @@ signUp.addEventListener("click", async function (e) {
     alert("You will be redirected to signIn page in few seconds");
     window.location.href = "./index.html";
   }, 8000);
+  }
 });
 
 async function emailValidate(user) {
