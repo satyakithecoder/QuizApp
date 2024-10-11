@@ -1,10 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
+
 * {
   font-family: "Fredoka", sans-serif;
   font-weight: 500;
   margin: 0;
   padding: 0;
 }
+
 body {
   height: 100vh;
   width: 100vw;
@@ -13,6 +15,7 @@ body {
   justify-content: space-evenly;
   flex-direction: column;
 }
+
 .container {
   display: flex;
   align-items: center;
@@ -24,10 +27,12 @@ body {
   border-radius: 15px;
   padding: 30px;
 }
+
 .container > h1 {
   font-size: 2.5vh;
   letter-spacing: 1.5px;
 }
+
 .options {
   height: 55%;
   width: 80%;
@@ -37,6 +42,7 @@ body {
   flex-direction: column;
   padding: 10px;
 }
+
 .options > button {
   width: 75%;
   height: 32px;
@@ -47,9 +53,11 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
+
 .hover:hover {
   background: linear-gradient(90deg in oklab, #347474, #118a7e);
 }
+
 #timer {
   font-size: 40px;
   color: rgb(41, 206, 41);
@@ -57,4 +65,27 @@ body {
   box-sizing: border-box;
   padding: 24px;
   border-radius: 60%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    height: 50vh;
+    width: 60vw;
+    margin: 0;
+  }
+
+  .container > h1 {
+    font-size: 3vh;
+  }
+
+  .options > button {
+    width: 90%;
+    height: 40px;
+    padding-left: 10px;
+  }
+
+  #timer {
+    font-size: 30px;
+    padding: 20px;
+  }
 }
