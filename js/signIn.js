@@ -56,6 +56,10 @@ signIn.addEventListener("click", function (e) {
 });
 
 googleSignInbtn.addEventListener("click", function () {
+  if (auth.currentUser) {
+    window.location.href = "./quiz.html";
+    return;
+  }
   signInWithPopup(auth, provider)
     .then(async (result) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -63,22 +67,21 @@ googleSignInbtn.addEventListener("click", function () {
       const user = result.user;
       console.log(token);
       console.log("User Signed In. User Info:", user);
-      
-      let emailCheck = user.email; 
-      const displayName = user.displayName; 
+
+      let emailCheck = user.email;
+      const displayName = user.displayName;
       const photoURL = user.photoURL;
 
-      
       if (!emailCheck) {
-         alert("Your Security Rules are not allowing us to access your email.");
-         email = prompt("Enter Your Email:"); 
-  
-         if (!email) {
-           alert("Email is required for signing up.");
-           return;
-         }
+        alert("Your Security Rules are not allowing us to access your email.");
+        email = prompt("Enter Your Email:");
+
+        if (!email) {
+          alert("Email is required for signing up.");
+          return;
+        }
       }
-      
+
       try {
         const docRef = await addDoc(collection(googleDB, "google_accounts"), {
           username: displayName,
@@ -89,19 +92,18 @@ googleSignInbtn.addEventListener("click", function () {
       } catch (e) {
         console.error("Error in sending details", e);
       }
-      
+
       window.location.href = "./quiz.html";
     })
     .catch((error) => {
       const errorMessage = error.message;
-      const email = error.customData?.email; 
+      const email = error.customData?.email;
       const credential = GoogleAuthProvider.credentialFromError(error);
       console.log(email, credential);
       console.error(`${errorMessage}`);
       alert("Google Sign-In failed");
     });
 });
-
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
