@@ -6,7 +6,7 @@ var counter = 0,
   correctAnswers = 0;
 var timer;
 var questionsArray = []
-var answersArray = []
+var correctAnswersArray = []
 //2D array
 var incorrectAnswersArray = []
 const random = Math.ceil(Math.random() * 3);
@@ -34,7 +34,7 @@ window.onload = async function () {
     const data = await response.json();
     for (let i = 1; i < data.results.length; i++) {
       questionsArray.push(data.results[i].question)
-      correctAnswers.push(data.results[i].correct_answer)
+      correctAnswersArray.push(data.results[i].correct_answer)
       incorrectAnswersArray.push(data.results[i].incorrect_answers)
     }
     question.innerHTML = `${counter}. ${data.results[0].question}`;
@@ -88,3 +88,4 @@ function countDown() {
     }
   }, 1000);
 }
+console.log(questionsArray, correctAnswersArray, incorrectAnswersArray);
