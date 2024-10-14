@@ -5,10 +5,10 @@ var counter = 0,
   incorrectAnswers = 0,
   correctAnswers = 0;
 var timer;
-var questionsArray = []
-var correctAnswersArray = []
+var questionsArray = [];
+var correctAnswersArray = [];
 //2D array
-var incorrectAnswersArray = []
+var incorrectAnswersArray = [];
 const random = Math.ceil(Math.random() * 3);
 function swap(array) {
   let current_index = array.length;
@@ -23,7 +23,7 @@ function swap(array) {
   return array;
 }
 window.onload = async function () {
-  counter++;
+  counter += 1;
   try {
     const response = await fetch(
       "https://opentdb.com/api.php?amount=20&category=9&difficulty=medium&type=multiple"
@@ -33,9 +33,9 @@ window.onload = async function () {
 
     const data = await response.json();
     for (let i = 1; i < data.results.length; i++) {
-      questionsArray.push(data.results[i].question)
-      correctAnswersArray.push(data.results[i].correct_answer)
-      incorrectAnswersArray.push(data.results[i].incorrect_answers)
+      questionsArray.push(data.results[i].question);
+      correctAnswersArray.push(data.results[i].correct_answer);
+      incorrectAnswersArray.push(data.results[i].incorrect_answers);
     }
     question.innerHTML = `${counter}. ${data.results[0].question}`;
     countDown();
@@ -64,6 +64,7 @@ function check(correct_answer) {
   console.log(correct_answer);
   disable();
   setTimeout(() => {
+    nextQuestion();
   }, 4000);
 }
 function disable() {
@@ -89,3 +90,6 @@ function countDown() {
   }, 1000);
 }
 console.log(questionsArray, correctAnswersArray, incorrectAnswersArray);
+
+function nextQuestion() { 
+}
