@@ -54,24 +54,40 @@ body {
   cursor: pointer;
 }
 
-.wrong{
+.wrong {
   width: 75%;
   height: 32px;
   text-align: left;
   padding-left: 20px;
-  background: linear-gradient(90deg in oklab, #6e2b2b, #7e1118);
+  color: rgba(211, 10, 10, 0.931);
+  border: 2px solid rgba(211, 10, 10, 0.931);
   border-radius: 6px;
   cursor: pointer;
 }
 
-.correct{
+.wrong::before {
+  content: "•";
+  color: rgba(211, 10, 10, 0.931);
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.correct {
   width: 75%;
   height: 32px;
   text-align: left;
   padding-left: 20px;
-  background-color: #1e9e1cd2;
+  color: rgba(14, 201, 14, 0.931);
+  border: 2px solid rgba(14, 201, 14, 0.931);
   border-radius: 6px;
   cursor: pointer;
+}
+
+.correct::before {
+  content: "•";
+  color: rgba(14, 201, 14, 0.931);
+  margin-right: 5px;
+  display: inline-block;
 }
 
 .hover:hover {

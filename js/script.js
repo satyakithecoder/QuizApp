@@ -1,15 +1,13 @@
 const question = document.getElementById("question");
 const time = document.getElementById("timer");
 const options = Array.from(document.getElementsByClassName("default"));
+var data;
 var counter = 0,
   incorrectAnswers = 0,
   correctAnswers = 0;
 var timer;
-var questionsArray = [];
-var correctAnswersArray = [];
-//2D array
-var incorrectAnswersArray = [];
 const random = Math.ceil(Math.random() * 3);
+var randomIndex = Math.round(Math.random() * 17);
 function swap(array) {
   let current_index = array.length;
   while (current_index !== 0) {
@@ -22,7 +20,7 @@ function swap(array) {
   }
   return array;
 }
-window.onload = async function () {
+document.addEventListener("DOMContentLoaded", async function () {
   try {
     const response = await fetch(
       "https://opentdb.com/api.php?amount=20&category=9&difficulty=medium&type=multiple"
@@ -30,44 +28,52 @@ window.onload = async function () {
 
     if (!response.ok) throw new Error("An Error Occurred");
 
-    const data = await response.json();
-    for (let i = 1; i < data.results.length; i++) {
-      questionsArray.push(data.results[i].question);
-      correctAnswersArray.push(data.results[i].correct_answer);
-      incorrectAnswersArray.push(data.results[i].incorrect_answers);
-    }
-    displayQuestion(counter);
+    data = await response.json();
+    displayQuestion();
     countDown();
-    const allAnswers = [data.results[0].correct_answer].concat(
-      data.results[0].incorrect_answers
+    const allAnswers = [data.results[randomIndex].correct_answer].concat(
+      data.results[randomIndex].incorrect_answers
     );
     const answers = swap(allAnswers);
     options.forEach((button, index) => {
       button.innerHTML = answers[index];
-      button.addEventListener("click", function () {
-        check(data.results[0].correct_answer);
+      button.addEventListener("click", function (e) {
+        check(data.results[randomIndex].correct_answer, e);
       });
     });
   } catch (err) {
     console.error(err);
   }
-};
-function displayQuestion(count) {
-  question.innerHTML = `${count + 1}. ${questionsArray[counter]}`;
+});
+function displayQuestion() {
+  counter++;
+  localStorage.setItem("count", counter);
+  question.innerHTML = data.results[randomIndex].question;
 }
-function check(correct_answer) {
+
+function check(correct_answer, userChoice) {
   options.forEach((button) => {
+    button.classList.remove("default");
     if (button.textContent === correct_answer) {
       button.classList.add("correct");
+      correctAnswers++;
     } else {
       button.classList.add("wrong");
+      incorrectAnswers++;
     }
   });
   console.log(correct_answer);
   disable();
+  if (userChoice.target.textContent === correct_answer) {
+    correctAnswers++;
+    localStorage.setItem("correct", correctAnswers);
+  } else {
+    incorrectAnswers++;
+    localStorage.setItem("incorrect", incorrectAnswers);
+  }
   setTimeout(() => {
     nextQuestion();
-  }, 4000);
+  }, 2500);
 }
 function disable() {
   options.forEach((button) => {
@@ -93,25 +99,19 @@ function countDown() {
 }
 
 function nextQuestion() {
-  if (counter < 19) {
-    displayQuestion(counter + 1);
-    const allAnswers = [correctAnswersArray[counter - 1]].concat(
-      incorrectAnswersArray[counter - 1]
-    );
-    const answers = swap(allAnswers);
-    options.forEach((button, index) => {
-      button.classList.remove("wrong", "correct");
-      button.classList.add("hover", "default");
-      button.innerHTML = answers[index];
-      button.disabled = false;
-      button.style.backgroundColor = "white";
-      button.addEventListener("click", function () {
-        check(correctAnswersArray[counter - 1]);
-      });
-    });
-    countDown();
-  } else {
-    clearInterval(timer);
+  if (parseInt(localStorage.getItem("count"), 10) === 20) {
     alert("Game Over");
+    parseInt(localStorage.getItem("correct"), 10);
+    parseInt(localStorage.getItem("incorrect"), 10);
+  } else {
+    localStorage.setItem("correct", correctAnswers);
+    localStorage.setItem("incorrect", incorrectAnswers);
+    const event = new Event("DOMContentLoaded");
+    options.forEach((button) => {
+      button.classList.remove("wrong", "correct");
+      button.classList.add("default");
+      button.disabled = false;
+    });
+    document.dispatchEvent(event);
   }
 }
