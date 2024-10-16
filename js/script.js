@@ -1,6 +1,6 @@
 const question = document.getElementById("question");
 const time = document.getElementById("timer");
-const options = Array.from(document.getElementsByTagName("button"));
+const options = Array.from(document.getElementsByClassName("default"));
 var counter = 0,
   incorrectAnswers = 0,
   correctAnswers = 0;
@@ -23,7 +23,6 @@ function swap(array) {
   return array;
 }
 window.onload = async function () {
-  counter += 1;
   try {
     const response = await fetch(
       "https://opentdb.com/api.php?amount=20&category=9&difficulty=medium&type=multiple"
@@ -37,7 +36,7 @@ window.onload = async function () {
       correctAnswersArray.push(data.results[i].correct_answer);
       incorrectAnswersArray.push(data.results[i].incorrect_answers);
     }
-    question.innerHTML = `${counter}. ${data.results[0].question}`;
+    displayQuestion(counter);
     countDown();
     const allAnswers = [data.results[0].correct_answer].concat(
       data.results[0].incorrect_answers
@@ -53,12 +52,15 @@ window.onload = async function () {
     console.error(err);
   }
 };
+function displayQuestion(count) {
+  question.innerHTML = `${count + 1}. ${questionsArray[counter]}`;
+}
 function check(correct_answer) {
   options.forEach((button) => {
     if (button.textContent === correct_answer) {
-      button.classList.add("wrong");
-    } else {
       button.classList.add("correct");
+    } else {
+      button.classList.add("wrong");
     }
   });
   console.log(correct_answer);
@@ -89,19 +91,17 @@ function countDown() {
     }
   }, 1000);
 }
-console.log(questionsArray, correctAnswersArray, incorrectAnswersArray);
 
 function nextQuestion() {
-  if (counter < 20) {
-    counter += 1;
-    console.log(counter);
-    question.innerHTML = `${counter}. ${questionsArray[counter - 1]}`;
+  if (counter < 19) {
+    displayQuestion(counter + 1);
     const allAnswers = [correctAnswersArray[counter - 1]].concat(
       incorrectAnswersArray[counter - 1]
     );
     const answers = swap(allAnswers);
     options.forEach((button, index) => {
-      button.classList.remove(...button.classList);
+      button.classList.remove("wrong", "correct");
+      button.classList.add("hover", "default");
       button.innerHTML = answers[index];
       button.disabled = false;
       button.style.backgroundColor = "white";
@@ -109,5 +109,9 @@ function nextQuestion() {
         check(correctAnswersArray[counter - 1]);
       });
     });
+    countDown();
+  } else {
+    clearInterval(timer);
+    alert("Game Over");
   }
 }
