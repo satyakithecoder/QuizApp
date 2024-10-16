@@ -56,9 +56,9 @@ window.onload = async function () {
 function check(correct_answer) {
   options.forEach((button) => {
     if (button.textContent === correct_answer) {
-      button.style.backgroundColor = "green";
+      button.classList.add("wrong");
     } else {
-      button.style.backgroundColor = "red";
+      button.classList.add("correct");
     }
   });
   console.log(correct_answer);
@@ -91,5 +91,23 @@ function countDown() {
 }
 console.log(questionsArray, correctAnswersArray, incorrectAnswersArray);
 
-function nextQuestion() { 
+function nextQuestion() {
+  if (counter < 20) {
+    counter += 1;
+    console.log(counter);
+    question.innerHTML = `${counter}. ${questionsArray[counter - 1]}`;
+    const allAnswers = [correctAnswersArray[counter - 1]].concat(
+      incorrectAnswersArray[counter - 1]
+    );
+    const answers = swap(allAnswers);
+    options.forEach((button, index) => {
+      button.classList.remove(...button.classList);
+      button.innerHTML = answers[index];
+      button.disabled = false;
+      button.style.backgroundColor = "white";
+      button.addEventListener("click", function () {
+        check(correctAnswersArray[counter - 1]);
+      });
+    });
+  }
 }

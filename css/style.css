@@ -54,6 +54,26 @@ body {
   cursor: pointer;
 }
 
+.wrong{
+  width: 75%;
+  height: 32px;
+  text-align: left;
+  padding-left: 20px;
+  background: linear-gradient(90deg in oklab, #6e2b2b, #7e1118);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.correct{
+  width: 75%;
+  height: 32px;
+  text-align: left;
+  padding-left: 20px;
+  background-color: #1e9e1cd2;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 .hover:hover {
   background: linear-gradient(90deg in oklab, #2b6e6e, #118a7e);
 }
