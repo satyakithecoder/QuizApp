@@ -1,0 +1,1 @@
+import { correctAnswers_exported, incorrectAnswers_exported } from "./script";
