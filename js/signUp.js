@@ -70,7 +70,7 @@ signUp.addEventListener("click", async function (e) {
 
   setTimeout(() => {
     alert("You will be redirected to signIn page in few seconds");
-    window.location.href = "./index.html";
+    window.location.href = ".index.html";
   }, 8000);
   }
 });
