@@ -1,11 +1,13 @@
 const question = document.getElementById("question");
-const time = document.getElementById("timer");
+const time = document.querySelector(".timer");
 const options = Array.from(document.getElementsByClassName("default"));
 var data;
+var timer;
+export var correctAnswers_exported, incorrectAnswers_exported;
 var counter = 0,
   incorrectAnswers = 0,
   correctAnswers = 0;
-var timer;
+var check_ifClicked = false;
 const random = Math.ceil(Math.random() * 3);
 var randomIndex = Math.round(Math.random() * 17);
 function swap(array) {
@@ -38,6 +40,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     options.forEach((button, index) => {
       button.innerHTML = answers[index];
       button.addEventListener("click", function (e) {
+        check_ifClicked = true;
         check(data.results[randomIndex].correct_answer, e);
       });
     });
@@ -56,15 +59,14 @@ function check(correct_answer, userChoice) {
     button.classList.remove("default");
     if (button.textContent === correct_answer) {
       button.classList.add("correct");
-      correctAnswers++;
     } else {
       button.classList.add("wrong");
-      incorrectAnswers++;
     }
   });
   console.log(correct_answer);
   disable();
-  if (userChoice.target.textContent === correct_answer) {
+  if (!check_ifClicked) alert("You didn' clicked any option");
+  else if (userChoice.target.textContent === correct_answer) {
     correctAnswers++;
     localStorage.setItem("correct", correctAnswers);
   } else {
@@ -95,17 +97,26 @@ function countDown() {
       disable();
       check();
     }
+    if (timeleft <= 30 && timeleft > 10) {
+      time.setAttribute("id", "orange");
+    } else if (timeleft <= 10) {
+      time.removeAttribute("id");
+      time.setAttribute("id", "red");
+    }
   }, 1000);
 }
 
 function nextQuestion() {
   if (parseInt(localStorage.getItem("count"), 10) === 20) {
     alert("Game Over");
-    parseInt(localStorage.getItem("correct"), 10);
-    parseInt(localStorage.getItem("incorrect"), 10);
+    console.log(
+      parseInt(localStorage.getItem("correct"), 10),
+      parseInt(localStorage.getItem("incorrect"), 10)
+    );
+    correctAnswers_exported = parseInt(localStorage.getItem("correct", 10));
+    incorrectAnswers_exported = parseInt(localStorage.getItem("incorrect", 10));
   } else {
-    localStorage.setItem("correct", correctAnswers);
-    localStorage.setItem("incorrect", incorrectAnswers);
+    time.removeAttribute("id");
     const event = new Event("DOMContentLoaded");
     options.forEach((button) => {
       button.classList.remove("wrong", "correct");
