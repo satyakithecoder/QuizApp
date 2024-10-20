@@ -118,6 +118,7 @@ function nextQuestion() {
     );
     window.correctAnswers_exported = correctAnswers_exported;
     window.incorrectAnswers_exported = incorrectAnswers_exported;
+    window.location.href = "score.html";
   } else {
     if (!time.classList.contains("timer")) {
       time.removeAttribute("id");

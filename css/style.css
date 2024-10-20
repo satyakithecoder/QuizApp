@@ -113,7 +113,7 @@ body {
 #orange {
   font-size: 40px;
   color: rgba(225, 148, 7, 0.923);
-  border: rgba(225, 148, 7, 0.923);
+  border: 10px solid rgba(225, 148, 7, 0.923);
   padding: 27px;
   border-radius: 65%;
 }
