@@ -1,9 +1,9 @@
 const question = document.getElementById("question");
-const time = document.querySelector(".timer");
+const time = document.querySelector(".select");
 const options = Array.from(document.getElementsByClassName("default"));
 var data;
 var timer;
-export var correctAnswers_exported, incorrectAnswers_exported;
+var correctAnswers_exported, incorrectAnswers_exported;
 var counter = 0,
   incorrectAnswers = 0,
   correctAnswers = 0;
@@ -28,7 +28,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       "https://opentdb.com/api.php?amount=20&category=9&difficulty=medium&type=multiple"
     );
 
-    if (!response.ok) throw new Error("An Error Occurred");
+    if (!response.ok) {
+      throw new Error("An Error Occurred");
+    }
 
     data = await response.json();
     displayQuestion();
@@ -98,6 +100,7 @@ function countDown() {
       check();
     }
     if (timeleft <= 30 && timeleft > 10) {
+      time.classList.remove("timer");
       time.setAttribute("id", "orange");
     } else if (timeleft <= 10) {
       time.removeAttribute("id");
@@ -108,15 +111,18 @@ function countDown() {
 
 function nextQuestion() {
   if (parseInt(localStorage.getItem("count"), 10) === 20) {
-    alert("Game Over");
+    correctAnswers_exported = parseInt(localStorage.getItem("correct"), 10);
+    incorrectAnswers_exported = parseInt(localStorage.getItem("incorrect"), 10);
     console.log(
-      parseInt(localStorage.getItem("correct"), 10),
-      parseInt(localStorage.getItem("incorrect"), 10)
+      console.log(correctAnswers_exported, incorrectAnswers_exported)
     );
-    correctAnswers_exported = parseInt(localStorage.getItem("correct", 10));
-    incorrectAnswers_exported = parseInt(localStorage.getItem("incorrect", 10));
+    window.correctAnswers_exported = correctAnswers_exported;
+    window.incorrectAnswers_exported = incorrectAnswers_exported;
   } else {
-    time.removeAttribute("id");
+    if (!time.classList.contains("timer")) {
+      time.removeAttribute("id");
+      time.setAttribute("class", "timer");
+    }
     const event = new Event("DOMContentLoaded");
     options.forEach((button) => {
       button.classList.remove("wrong", "correct");
